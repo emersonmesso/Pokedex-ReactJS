@@ -18,7 +18,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 function Home() {
     const [listPokemon, setListPokemon] = useState([]);
     const [isLoadding, setIsLoading] = useState(true);
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(20);
 
     function initData() {
         fetch("https://pokeapi.co/api/v2/pokemon/?offset=0&limit=10")
@@ -34,9 +34,8 @@ function Home() {
             )
     }
 
-    function getMore()
-    {
-        fetch("https://pokeapi.co/api/v2/pokemon/?offset=" + page + "&limit=10")
+    function getMore() {
+        fetch("https://pokeapi.co/api/v2/pokemon/?offset=0&limit=" + page)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -48,10 +47,9 @@ function Home() {
                 }
             )
     }
-    
+
 
     function onClickPage(offset, limit) {
-        //setConterPaages(page +);
 
         fetch("https://pokeapi.co/api/v2/pokemon/?offset=" + offset + "&limit=" + limit)
             .then(res => res.json())
@@ -103,11 +101,20 @@ function Home() {
 
                     <Center bg='Gray 200' color='white'>
 
-                        <Wrap spacing='40px' justify='center'>
-                            {listPokemon.map((item) =>
-                                <PokemonItem key={item.url} data={item} />
-                            )}
-                        </Wrap>
+
+                        <InfiniteScroll
+                            dataLength={listPokemon.length}
+                            next={getMore}
+                            hasMore={true}
+                            loader={<h4>Loading...</h4>}
+                        >
+                            <Wrap spacing='40px' justify='center'>
+                                {listPokemon.map((item) =>
+                                    <PokemonItem key={item.url} data={item} />
+                                )}
+                            </Wrap>
+
+                        </InfiniteScroll>
 
                     </Center>
                 </Box>
